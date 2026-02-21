@@ -59,5 +59,34 @@
       }
     },
     "arbitrage_count": 2
+  },
+  {
+    "timestamp": "2026-02-21 12:35:29 UTC",
+    "awakening": 5,
+    "exchange_prices": {
+      "CoinGecko": {
+        "BTC": 67923,
+        "ETH": 1970.86,
+        "SOL": 85.13,
+        "XRP": 1.44,
+        "ADA": 0.282535
+      },
+      "Kraken": {
+        "ADA": 0.282123,
+        "ETH": 1971.35,
+        "SOL": 85.08,
+        "BTC": 67932.8,
+        "XRP": 1.43639
+      },
+      "Coinbase": {
+        "BTC": 67945.085,
+        "ETH": 1971.67,
+        "SOL": 85.025,
+        "XRP": 1.43635,
+        "ADA": 0.282
+      }
+    },
+    "arbitrage_count": 1,
+    "actionable_arbitrage": 1
   }
 ]
