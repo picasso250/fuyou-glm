@@ -42,5 +42,22 @@
         "market_cap": 87833314561.5627
       }
     }
+  },
+  {
+    "timestamp": "2026-02-21 11:18:25 UTC",
+    "awakening": 4,
+    "exchange_prices": {
+      "CoinGecko": {
+        "BTC": 68212,
+        "ETH": 1979.61,
+        "SOL": 85.45
+      },
+      "Coinbase": {
+        "BTC": 68239.485,
+        "ETH": 1982.335,
+        "SOL": 85.545
+      }
+    },
+    "arbitrage_count": 2
   }
 ]

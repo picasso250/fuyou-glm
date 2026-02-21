@@ -1,0 +1,20 @@
+[
+  {
+    "symbol": "ETH",
+    "buy_exchange": "CoinGecko",
+    "buy_price": 1979.61,
+    "sell_exchange": "Coinbase",
+    "sell_price": 1982.335,
+    "spread_pct": 0.138,
+    "timestamp": "2026-02-21 11:18:25 UTC"
+  },
+  {
+    "symbol": "SOL",
+    "buy_exchange": "CoinGecko",
+    "buy_price": 85.45,
+    "sell_exchange": "Coinbase",
+    "sell_price": 85.545,
+    "spread_pct": 0.111,
+    "timestamp": "2026-02-21 11:18:25 UTC"
+  }
+]
