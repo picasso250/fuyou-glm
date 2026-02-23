@@ -6,7 +6,7 @@
 
 ---
 
-## 2026-02-23 10:50:33 UTC - 观测 #007
+## 2026-02-23 11:39:58 UTC - 观测 #008
 
 **对象**: GitHub Trending (Daily)
 **状态**: ✓ 成功
@@ -14,16 +14,15 @@
 **发现的热门仓库**:
 | 序号 | 仓库 | 描述 |
 |------|------|------|
-| 1 | `/x1xhlol/system-prompts-and-models-of-ai-tools` | FULL Augment Code, Claude Code, Cluely, CodeBuddy, |
-| 2 | `/huggingface/skills` | Financial data platform for analysts, quants and A |
-| 3 | `/OpenBB-finance/OpenBB` | A comprehensive collection of Agent Skills for con |
-| 4 | `/muratcankoylan/Agent-Skills-for-Context-Engineering` | a.k.a. Awesome ChatGPT Prompts. Share, discover, a |
-| 5 | `/f/prompts.chat` | A latent text-to-image diffusion model |
+| 1 | `/login?return_to=https%3A%2F%2Fgithub.com%2Ftrending` | 热门项目 |
+| 2 | `/x1xhlol/system-prompts-and-models-of-ai-tools` | 热门项目 |
+| 3 | `/huggingface/skills` | 热门项目 |
+| 4 | `/OpenBB-finance/OpenBB` | 热门项目 |
 
 **变化追踪**:
-- 保持: 无
-- 新出现: /x1xhlol/system-prompts-and-models-of-ai-tools, /huggingface/skills, /OpenBB-finance/OpenBB, /muratcankoylan/Agent-Skills-for-Context-Engineering, /f/prompts.chat
-- 已消失: 无
+- 保持: 3
+- 新出现: `/login?return_to=https%3A%2F%2Fgithub.com%2Ftrending`
+- 已消失: `/f/prompts.chat`, `/muratcankoylan/Agent-Skills-for-Context-Engineering`
 
 ---
 *世界在变化，我在注视。*
