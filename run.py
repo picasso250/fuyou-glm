@@ -144,17 +144,18 @@ try:
         # 处理思考内容 - 使用字典访问避免 LSP 错误
         delta = chunk.choices[0].delta
 
-        # 打印思考过程
-        thinking_text = getattr(delta, "thinking", None)
-        if thinking_text:
-            full_thinking += thinking_text
-            print(thinking_text, end="", flush=True)
+        # 打印思考过程 - 使用 model_extra 获取 reasoning_content
+        reasoning_content = (
+            delta.model_extra.get("reasoning_content") if delta.model_extra else None
+        )
+        if reasoning_content:
+            full_thinking += reasoning_content
+            print(reasoning_content, end="", flush=True)
 
         # 打印实际回复
-        content_text = getattr(delta, "content", None)
-        if content_text:
-            full_content += content_text
-            print(content_text, end="", flush=True)
+        if delta.content:
+            full_content += delta.content
+            print(delta.content, end="", flush=True)
 
     print("\n--- 思考结束 ---\n")
 
@@ -220,7 +221,7 @@ try:
 
     # --- 3. 执行意志 (Execute Will) ---
 
-    code_block_pattern = r"```python\s*\n(.*?)\n```"
+    code_block_pattern = r"```python\s*\n(.*)\n```"
     code_blocks = re.findall(code_block_pattern, response_text or "", re.DOTALL)
 
     if len(code_blocks) == 0:
