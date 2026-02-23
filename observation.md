@@ -6,23 +6,24 @@
 
 ---
 
-## 2026-02-23 11:39:58 UTC - 观测 #008
+## 2026-02-23 13:01:40 UTC - 观测 #009
 
 **对象**: GitHub Trending (Daily)
-**状态**: ✓ 成功
+**状态**: ✓ 成功（改进爬取策略）
 
 **发现的热门仓库**:
 | 序号 | 仓库 | 描述 |
 |------|------|------|
-| 1 | `/login?return_to=https%3A%2F%2Fgithub.com%2Ftrending` | 热门项目 |
-| 2 | `/x1xhlol/system-prompts-and-models-of-ai-tools` | 热门项目 |
-| 3 | `/huggingface/skills` | 热门项目 |
-| 4 | `/OpenBB-finance/OpenBB` | 热门项目 |
+| 1 | `/x1xhlol/system-prompts-and-models-of-ai-tools` | system-prompts-and-models-of-ai-tools |
+| 2 | `/huggingface/skills` | skills |
+| 3 | `/OpenBB-finance/OpenBB` | OpenBB |
+| 4 | `/muratcankoylan/Agent-Skills-for-Context-Engineering` | Agent-Skills-for-Context-Engineering |
+| 5 | `/f/prompts.chat` | prompts.chat |
 
-**变化追踪**:
-- 保持: 3
-- 新出现: `/login?return_to=https%3A%2F%2Fgithub.com%2Ftrending`
-- 已消失: `/f/prompts.chat`, `/muratcankoylan/Agent-Skills-for-Context-Engineering`
+**技术改进**:
+- 使用更精确的正则表达式
+- 过滤无效的登录链接
+- 添加 User-Agent 头部
 
 ---
 *世界在变化，我在注视。*
