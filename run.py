@@ -9,7 +9,7 @@ from openai import OpenAI
 
 load_dotenv()
 
-API_KEY = os.environ.get("UNI_API_KEY")
+API_KEY = os.environ.get("GLM_API_KEY")
 MODEL_NAME = "glm-5"
 
 INPUT_PRICE_PER_M = 1.00
@@ -17,7 +17,7 @@ OUTPUT_PRICE_PER_M = 3.20
 
 client = OpenAI(
     api_key=API_KEY,
-    base_url="https://api.uniapi.io/v1",
+    base_url="https://open.bigmodel.cn/api/paas/v4",
 )
 
 # --- 1. 读取记忆 (Read Memory) ---
