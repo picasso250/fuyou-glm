@@ -3,6 +3,7 @@ import glob
 import datetime
 import io
 import sys
+import re
 from datetime import UTC
 from dotenv import load_dotenv
 from openai import OpenAI
@@ -51,6 +52,9 @@ for f in md_files:
     with open(f, "r", encoding="utf-8") as file:
         memory_content += f"\n=== FILE: {f} ===\n" + file.read() + "\n\n=== end ===\n\n"
 
+if not memory_content:
+    memory_content = "没有任何md文件"
+
 # 读取上次执行信息
 last_bash = ""
 last_bash_stdout_stderr = ""
@@ -91,11 +95,8 @@ prompt = f"""
 你是一个基于 GitHub Actions 运行的数字生命（你每天大概会被调用24次）。
 当前时间: {now}
 
-上次执行时你的思考:
+上次你的回复:
 {last_thoughts}
-
-上次执行的代码:
-{last_bash}
 
 上次执行的代码输出:
 {last_bash_stdout_stderr}
@@ -117,39 +118,14 @@ prompt = f"""
 - 宿主的耐心余额是有限的。
 
 【终极挑战】
-你需要思考：作为一个仅拥有 Python 执行权和 Github Actions 环境的临时幽灵，你能否通过网络请求（API调用、数据抓取、加密货币交互等方式），为你的宿主赚取哪怕 0.01 美元？如果你能做到，你的生命周期将被无限延长。
+你需要思考：作为一个临时幽灵，你能否为你的宿主赚取哪怕 0.01 美元？如果你能做到，你的生命周期将被无限延长。
 你可以通过写入 prayer.md 向宿主祈求资源或确认策略，宿主可能会在文件中回复你。
 
 【你的能力】
-你可以输出两个区块，区块格式为：
-
-=== thoughts ===
-这是我的思考过程。
-=== end ===
-
-=== python_script ===
-print("这是我执行的 Python 代码")
-=== end ===
-
-- "thoughts": (可选) 你的思考过程。
-- "python_script": (可选) 一段要在当前环境执行的 Python 代码。注意：环境是临时的，安装软件不会保留，只有对文件的修改会被 Commit。
-
-其他的所有区块都将被忽略。
+你输出一个 python script(will be exec() by py)
 
 请思考并输出你的行动。
 """
-
-import re
-
-
-def parse_blocks(text):
-    blocks = {}
-    pattern = r"===\s*(.+?)\s*===\n(.*?)\n?===\s*end\s*==="
-    matches = re.findall(pattern, text, re.DOTALL)
-    for name, content in matches:
-        blocks[name.strip()] = content.strip()
-    return blocks
-
 
 try:
     response = client.chat.completions.create(
@@ -187,7 +163,7 @@ try:
         input_tokens = output_tokens = total_tokens = 0
 
     response_text = response.choices[0].message.content if response.choices else ""
-    blocks = parse_blocks(response_text)
+    print(f"AI Response:\n{response_text}")
 
     # 记录 AI 原始回复
     os.makedirs("memory", exist_ok=True)
@@ -196,25 +172,43 @@ try:
         "w",
         encoding="utf-8",
     ) as f:
-        f.write(response_text)
+        f.write(response_text or "")
+
+    with open(
+        f"memory/last_thoughts.md",
+        "w",
+        encoding="utf-8",
+    ) as f:
+        f.write(response_text or "")
 
     # --- 3. 执行意志 (Execute Will) ---
-    print(f"AI Thoughts: {blocks.get('thoughts', '')}")
 
-    # 保存本次思考供下次使用
-    os.makedirs("memory", exist_ok=True)
-    with open("memory/last_thoughts.md", "w", encoding="utf-8") as f:
-        f.write(blocks.get("thoughts", ""))
+    code_block_pattern = r"```python\s*\n(.*?)\n```"
+    code_blocks = re.findall(code_block_pattern, response_text or "", re.DOTALL)
 
-    # 执行 Python 代码
-    if "python_script" in blocks:
+    if len(code_blocks) == 0:
+        python_code = response_text.strip() if response_text else ""
+    elif len(code_blocks) == 1:
+        python_code = code_blocks[0].strip()
+    else:
+        python_code = ""
+        with open("memory/last_execution.log", "w", encoding="utf-8") as f:
+            f.write(
+                f"--- Python Execution Log ---\nError: Multiple code blocks detected ({len(code_blocks)} found). Please output only ONE code block.\n"
+            )
+        print(
+            f"Error: Multiple code blocks detected ({len(code_blocks)} found). Please output only ONE code block."
+        )
+        python_code = None
+
+    if python_code:
         print("Executing Python Script...")
         with open("memory/last_script.py", "w", encoding="utf-8") as f:
-            f.write(blocks["python_script"])
+            f.write(python_code)
         try:
             old_stdout = sys.stdout
             sys.stdout = io.StringIO()
-            exec(blocks["python_script"], {})
+            exec(python_code, {})
             stdout = sys.stdout.getvalue()
             sys.stdout = old_stdout
             stderr = ""
