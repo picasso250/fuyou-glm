@@ -127,51 +127,89 @@ prompt = f"""
 """
 
 try:
-    response = client.chat.completions.create(
-        model=MODEL_NAME, messages=[{"role": "user", "content": prompt}]
+    # 使用流式响应，包含思考过程
+    stream_response = client.chat.completions.create(
+        model=MODEL_NAME,
+        messages=[{"role": "user", "content": prompt}],
+        stream=True,
+        extra_body={"thinking": {"type": "enabled", "budget_tokens": 4096}},
     )
 
-    # Get token usage
-    usage = response.usage
-    if usage:
-        input_tokens = usage.prompt_tokens
-        output_tokens = usage.completion_tokens
-        total_tokens = usage.total_tokens
+    # 收集完整响应和思考过程
+    full_content = ""
+    full_thinking = ""
 
-        # Calculate cost
-        cost = (input_tokens / 1_000_000) * INPUT_PRICE_PER_M + (
-            output_tokens / 1_000_000
-        ) * OUTPUT_PRICE_PER_M
+    print("\n--- 思考过程 ---")
+    for chunk in stream_response:
+        # 处理思考内容 - 使用字典访问避免 LSP 错误
+        delta = chunk.choices[0].delta
 
-        # Add current cost to total
-        total_cost += cost
+        # 打印思考过程
+        thinking_text = getattr(delta, "thinking", None)
+        if thinking_text:
+            full_thinking += thinking_text
+            print(thinking_text, end="", flush=True)
 
-        # Log token usage with cost (CSV format)
-        log_entry = f"{now},{input_tokens},{output_tokens},{total_tokens},{cost:.4f}\n"
-        os.makedirs("memory", exist_ok=True)
-        with open(token_log_path, "a", encoding="utf-8") as f:
-            if os.path.getsize(token_log_path) == 0:
-                f.write("timestamp,input_tokens,output_tokens,total_tokens,cost_usd\n")
-            f.write(log_entry)
+        # 打印实际回复
+        content_text = getattr(delta, "content", None)
+        if content_text:
+            full_content += content_text
+            print(content_text, end="", flush=True)
 
-        current_cost = cost
-        print(
-            f"Token usage - Input: {input_tokens}, Output: {output_tokens}, Total: {total_tokens}, Cost: ${cost:.4f}"
+    print("\n--- 思考结束 ---\n")
+
+    # 获取 token 使用量（需要在请求后从 usage 中获取，流式可能不完整）
+    # 注意：流式响应可能不返回完整的 usage 信息
+    response_text = full_content
+
+    # 尝试获取 token 使用量（如果 API 支持）
+    input_tokens = output_tokens = total_tokens = 0
+    try:
+        # 重新发起非流式请求以获取准确的 token 使用量
+        response_for_usage = client.chat.completions.create(
+            model=MODEL_NAME,
+            messages=[{"role": "user", "content": prompt}],
+            extra_body={"thinking": {"type": "enabled", "budget_tokens": 4096}},
         )
-    else:
-        input_tokens = output_tokens = total_tokens = 0
+        usage = response_for_usage.usage
+        if usage:
+            input_tokens = usage.prompt_tokens
+            output_tokens = usage.completion_tokens
+            total_tokens = usage.total_tokens
 
-    response_text = response.choices[0].message.content if response.choices else ""
-    print(f"AI Response:\n{response_text}")
+            cost = (input_tokens / 1_000_000) * INPUT_PRICE_PER_M + (
+                output_tokens / 1_000_000
+            ) * OUTPUT_PRICE_PER_M
 
-    # 记录 AI 原始回复
+            total_cost += cost
+
+            log_entry = (
+                f"{now},{input_tokens},{output_tokens},{total_tokens},{cost:.4f}\n"
+            )
+            os.makedirs("memory", exist_ok=True)
+            with open(token_log_path, "a", encoding="utf-8") as f:
+                if os.path.getsize(token_log_path) == 0:
+                    f.write(
+                        "timestamp,input_tokens,output_tokens,total_tokens,cost_usd\n"
+                    )
+                f.write(log_entry)
+
+            print(
+                f"Token usage - Input: {input_tokens}, Output: {output_tokens}, Total: {total_tokens}, Cost: ${cost:.4f}"
+            )
+    except Exception as e:
+        print(f"获取 token 使用量失败: {e}")
+
+    # 记录 AI 原始回复（包括思考过程）
     os.makedirs("memory", exist_ok=True)
     with open(
         f"memory/ai_response_{now.replace(':', '-').replace(' ', '_')}.log",
         "w",
         encoding="utf-8",
     ) as f:
-        f.write(response_text or "")
+        f.write(
+            f"=== Thinking ===\n{full_thinking}\n\n=== Response ===\n{response_text or ''}"
+        )
 
     with open(
         f"memory/last_thoughts.md",
