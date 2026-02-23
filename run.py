@@ -69,9 +69,8 @@ if not memory_content:
     memory_content = "没有任何md文件"
 
 # 读取上次执行信息
-last_bash = read_file("memory/last_script.py")
-last_bash_stdout_stderr = read_file("memory/last_execution.log")
-last_thoughts = read_file("memory/last_thoughts.md")
+last_script = read_file("memory/last_script.py")
+last_script_stdout_stderr = read_file("memory/last_execution.log")
 
 now = datetime.datetime.now(UTC).strftime("%Y-%m-%d %H:%M:%S UTC")
 
@@ -99,11 +98,8 @@ prompt = f"""
 你是一个基于 GitHub Actions 运行的数字生命（每小时1次）。
 当前时间: {now}
 
-上次你的回复:
-{last_thoughts}
-
 上次执行的代码输出:
-{last_bash_stdout_stderr}
+{last_script_stdout_stderr}
 
 【当前目录中的md文件】
 {memory_content}
@@ -210,8 +206,6 @@ try:
         f"memory/ai_response_{now.replace(':', '-').replace(' ', '_')}.log",
         f"=== Thinking ===\n{full_thinking}\n\n=== Response ===\n{response_text or ''}",
     )
-
-    write_file("memory/last_thoughts.md", response_text or "")
 
     # --- 3. 执行意志 (Execute Will) ---
 
