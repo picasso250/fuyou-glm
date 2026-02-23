@@ -10,6 +10,8 @@ from openai import OpenAI
 
 load_dotenv()
 
+os.makedirs("log", exist_ok=True)
+
 
 def read_file(path: str) -> str:
     if not os.path.exists(path):
@@ -69,15 +71,15 @@ if not memory_content:
     memory_content = "没有任何md文件"
 
 # 读取上次执行信息
-last_script = read_file("memory/last_script.py")
-last_script_stdout_stderr = read_file("memory/last_execution.log")
+last_script = read_file("log/last_script.py")
+last_script_stdout_stderr = read_file("log/last_execution.log")
 
 now = datetime.datetime.now(UTC).strftime("%Y-%m-%d %H:%M:%S UTC")
 
 # 计算累计成本 (在 API 调用前)
 total_cost = 0.0
 last_cost = 0.0
-token_log_path = "memory/token_usage.csv"
+token_log_path = "log/token_usage.csv"
 if os.path.exists(token_log_path):
     try:
         with open(token_log_path, "r", encoding="utf-8") as f:
@@ -177,7 +179,6 @@ try:
         total_cost += cost
 
         log_entry = f"{now},{input_tokens},{output_tokens},{total_tokens},{cost:.4f}\n"
-        os.makedirs("memory", exist_ok=True)
         with open(token_log_path, "a", encoding="utf-8") as f:
             if os.path.getsize(token_log_path) == 0:
                 f.write("timestamp,input_tokens,output_tokens,total_tokens,cost_usd\n")
@@ -189,7 +190,7 @@ try:
 
     # 记录 AI 原始回复（包括思考过程）
     write_file(
-        f"memory/ai_response_{now.replace(':', '-').replace(' ', '_')}.log",
+        f"log/ai_response_{now.replace(':', '-').replace(' ', '_')}.log",
         f"=== Thinking ===\n{full_thinking}\n\n=== Response ===\n{response_text or ''}",
     )
 
@@ -205,7 +206,7 @@ try:
     else:
         python_code = ""
         write_file(
-            "memory/last_execution.log",
+            "log/last_execution.log",
             f"--- Python Execution Log ---\nError: Multiple code blocks detected ({len(code_blocks)} found). Please output only ONE code block.\n",
         )
         print(
@@ -215,7 +216,7 @@ try:
 
     if python_code:
         print("Executing Python Script...")
-        write_file("memory/last_script.py", python_code)
+        write_file("log/last_script.py", python_code)
         try:
             old_stdout = sys.stdout
             sys.stdout = io.StringIO()
@@ -227,10 +228,10 @@ try:
             stdout = ""
             stderr = str(e)
         write_file(
-            "memory/last_execution.log",
+            "log/last_execution.log",
             f"--- Python Execution Log ---\nStdout: {stdout}\nStderr: {stderr}",
         )
 
 except Exception as e:
     print(f"Error during AI execution: {e}")
-    # 可以选择把错误写进 memory/error.log 让它下次知道自己出错了
+    # 可以选择把错误写进 log/error.log 让它下次知道自己出错了
