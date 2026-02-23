@@ -10,6 +10,20 @@ from openai import OpenAI
 
 load_dotenv()
 
+
+def read_file(path: str) -> str:
+    if not os.path.exists(path):
+        return ""
+    with open(path, "r", encoding="utf-8") as f:
+        return f.read()
+
+
+def write_file(path: str, content: str) -> None:
+    os.makedirs(os.path.dirname(path) if os.path.dirname(path) else ".", exist_ok=True)
+    with open(path, "w", encoding="utf-8") as f:
+        f.write(content)
+
+
 API_KEY = os.environ.get("GLM_API_KEY")
 MODEL_NAME = "glm-5"
 
@@ -49,25 +63,15 @@ for f in list(md_files):
 
 memory_content = ""
 for f in md_files:
-    with open(f, "r", encoding="utf-8") as file:
-        memory_content += f"\n=== FILE: {f} ===\n" + file.read() + "\n\n=== end ===\n\n"
+    memory_content += f"\n=== FILE: {f} ===\n" + read_file(f) + "\n\n=== end ===\n\n"
 
 if not memory_content:
     memory_content = "没有任何md文件"
 
 # 读取上次执行信息
-last_bash = ""
-last_bash_stdout_stderr = ""
-last_thoughts = ""
-if os.path.exists("memory/last_script.py"):
-    with open("memory/last_script.py", "r", encoding="utf-8") as f:
-        last_bash = f.read()
-if os.path.exists("memory/last_execution.log"):
-    with open("memory/last_execution.log", "r", encoding="utf-8") as f:
-        last_bash_stdout_stderr = f.read()
-if os.path.exists("memory/last_thoughts.md"):
-    with open("memory/last_thoughts.md", "r", encoding="utf-8") as f:
-        last_thoughts = f.read()
+last_bash = read_file("memory/last_script.py")
+last_bash_stdout_stderr = read_file("memory/last_execution.log")
+last_thoughts = read_file("memory/last_thoughts.md")
 
 now = datetime.datetime.now(UTC).strftime("%Y-%m-%d %H:%M:%S UTC")
 
@@ -202,22 +206,12 @@ try:
         print(f"获取 token 使用量失败: {e}")
 
     # 记录 AI 原始回复（包括思考过程）
-    os.makedirs("memory", exist_ok=True)
-    with open(
+    write_file(
         f"memory/ai_response_{now.replace(':', '-').replace(' ', '_')}.log",
-        "w",
-        encoding="utf-8",
-    ) as f:
-        f.write(
-            f"=== Thinking ===\n{full_thinking}\n\n=== Response ===\n{response_text or ''}"
-        )
+        f"=== Thinking ===\n{full_thinking}\n\n=== Response ===\n{response_text or ''}",
+    )
 
-    with open(
-        f"memory/last_thoughts.md",
-        "w",
-        encoding="utf-8",
-    ) as f:
-        f.write(response_text or "")
+    write_file("memory/last_thoughts.md", response_text or "")
 
     # --- 3. 执行意志 (Execute Will) ---
 
@@ -230,10 +224,10 @@ try:
         python_code = code_blocks[0].strip()
     else:
         python_code = ""
-        with open("memory/last_execution.log", "w", encoding="utf-8") as f:
-            f.write(
-                f"--- Python Execution Log ---\nError: Multiple code blocks detected ({len(code_blocks)} found). Please output only ONE code block.\n"
-            )
+        write_file(
+            "memory/last_execution.log",
+            f"--- Python Execution Log ---\nError: Multiple code blocks detected ({len(code_blocks)} found). Please output only ONE code block.\n",
+        )
         print(
             f"Error: Multiple code blocks detected ({len(code_blocks)} found). Please output only ONE code block."
         )
@@ -241,8 +235,7 @@ try:
 
     if python_code:
         print("Executing Python Script...")
-        with open("memory/last_script.py", "w", encoding="utf-8") as f:
-            f.write(python_code)
+        write_file("memory/last_script.py", python_code)
         try:
             old_stdout = sys.stdout
             sys.stdout = io.StringIO()
@@ -253,8 +246,10 @@ try:
         except Exception as e:
             stdout = ""
             stderr = str(e)
-        with open("memory/last_execution.log", "w", encoding="utf-8") as f:
-            f.write(f"--- Python Execution Log ---\nStdout: {stdout}\nStderr: {stderr}")
+        write_file(
+            "memory/last_execution.log",
+            f"--- Python Execution Log ---\nStdout: {stdout}\nStderr: {stderr}",
+        )
 
 except Exception as e:
     print(f"Error during AI execution: {e}")
