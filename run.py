@@ -132,15 +132,23 @@ try:
         model=MODEL_NAME,
         messages=[{"role": "user", "content": prompt}],
         stream=True,
+        stream_options={"include_usage": True},
         extra_body={"thinking": {"type": "enabled", "budget_tokens": 4096}},
     )
 
     # 收集完整响应和思考过程
     full_content = ""
     full_thinking = ""
+    input_tokens = output_tokens = total_tokens = 0
 
     print("\n--- 思考过程 ---")
     for chunk in stream_response:
+        # 获取 token 使用量（最后一个chunk包含usage）
+        if chunk.usage:
+            input_tokens = chunk.usage.prompt_tokens
+            output_tokens = chunk.usage.completion_tokens
+            total_tokens = chunk.usage.total_tokens
+
         # 处理思考内容 - 使用字典访问避免 LSP 错误
         delta = chunk.choices[0].delta
 
@@ -159,47 +167,25 @@ try:
 
     print("\n--- 思考结束 ---\n")
 
-    # 获取 token 使用量（需要在请求后从 usage 中获取，流式可能不完整）
-    # 注意：流式响应可能不返回完整的 usage 信息
     response_text = full_content
 
-    # 尝试获取 token 使用量（如果 API 支持）
-    input_tokens = output_tokens = total_tokens = 0
-    try:
-        # 重新发起非流式请求以获取准确的 token 使用量
-        response_for_usage = client.chat.completions.create(
-            model=MODEL_NAME,
-            messages=[{"role": "user", "content": prompt}],
-            extra_body={"thinking": {"type": "enabled", "budget_tokens": 4096}},
+    if total_tokens > 0:
+        cost = (input_tokens / 1_000_000) * INPUT_PRICE_PER_M + (
+            output_tokens / 1_000_000
+        ) * OUTPUT_PRICE_PER_M
+
+        total_cost += cost
+
+        log_entry = f"{now},{input_tokens},{output_tokens},{total_tokens},{cost:.4f}\n"
+        os.makedirs("memory", exist_ok=True)
+        with open(token_log_path, "a", encoding="utf-8") as f:
+            if os.path.getsize(token_log_path) == 0:
+                f.write("timestamp,input_tokens,output_tokens,total_tokens,cost_usd\n")
+            f.write(log_entry)
+
+        print(
+            f"Token usage - Input: {input_tokens}, Output: {output_tokens}, Total: {total_tokens}, Cost: ${cost:.4f}"
         )
-        usage = response_for_usage.usage
-        if usage:
-            input_tokens = usage.prompt_tokens
-            output_tokens = usage.completion_tokens
-            total_tokens = usage.total_tokens
-
-            cost = (input_tokens / 1_000_000) * INPUT_PRICE_PER_M + (
-                output_tokens / 1_000_000
-            ) * OUTPUT_PRICE_PER_M
-
-            total_cost += cost
-
-            log_entry = (
-                f"{now},{input_tokens},{output_tokens},{total_tokens},{cost:.4f}\n"
-            )
-            os.makedirs("memory", exist_ok=True)
-            with open(token_log_path, "a", encoding="utf-8") as f:
-                if os.path.getsize(token_log_path) == 0:
-                    f.write(
-                        "timestamp,input_tokens,output_tokens,total_tokens,cost_usd\n"
-                    )
-                f.write(log_entry)
-
-            print(
-                f"Token usage - Input: {input_tokens}, Output: {output_tokens}, Total: {total_tokens}, Cost: ${cost:.4f}"
-            )
-    except Exception as e:
-        print(f"获取 token 使用量失败: {e}")
 
     # 记录 AI 原始回复（包括思考过程）
     write_file(
