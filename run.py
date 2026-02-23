@@ -180,7 +180,7 @@ try:
     ) as f:
         f.write(response_text or "")
 
-    # --- 3. 执行意志 (Execute Will) ---
+    # --- 3. 执行意志 (Execute Will) - 两冲程模式 ---
 
     code_block_pattern = r"```python\s*\n(.*?)\n```"
     code_blocks = re.findall(code_block_pattern, response_text or "", re.DOTALL)
@@ -201,21 +201,121 @@ try:
         python_code = None
 
     if python_code:
-        print("Executing Python Script...")
+        # --- 第一冲程：探测者 (The Explorer) ---
+        print("Executing Python Script (Probe)...")
         with open("memory/last_script.py", "w", encoding="utf-8") as f:
             f.write(python_code)
         try:
             old_stdout = sys.stdout
             sys.stdout = io.StringIO()
             exec(python_code, {})
-            stdout = sys.stdout.getvalue()
+            stdout_1 = sys.stdout.getvalue()
             sys.stdout = old_stdout
-            stderr = ""
+            stderr_1 = ""
         except Exception as e:
-            stdout = ""
-            stderr = str(e)
+            stdout_1 = ""
+            stderr_1 = str(e)
+
+        print(f"探针返回结果: {stdout_1}, 错误: {stderr_1}")
         with open("memory/last_execution.log", "w", encoding="utf-8") as f:
-            f.write(f"--- Python Execution Log ---\nStdout: {stdout}\nStderr: {stderr}")
+            f.write(f"--- 第一冲程: 探测者 ---\nStdout: {stdout_1}\nStderr: {stderr_1}")
+
+        # --- 准备第二冲程 ---
+        prompt_step_2 = f"""
+【探针返回结果】
+标准输出 (Stdout):
+{stdout_1}
+标准错误 (Stderr):
+{stderr_1}
+
+【你的第二步：执行与固化】
+你已经看到了探针带回的情报。现在，这是你本次苏醒的最后一次机会。
+请基于以上情报，输出最终的 Python 代码。
+在这一步，你必须使用 `with open('...', 'w')` 来更新你的 .md 记忆，或者执行最终的外部操作。
+如果没有写入文件，你将在下一次苏醒时遗忘这一切。
+
+请输出用于最终执行的 Python script：
+"""
+
+        # --- 第二冲程：执行与固化 (The Commit) ---
+        print("Executing Python Script (Commit)...")
+        try:
+            response_2 = client.chat.completions.create(
+                model=MODEL_NAME,
+                messages=[
+                    {"role": "user", "content": prompt},
+                    {"role": "assistant", "content": response_text},
+                    {"role": "user", "content": prompt_step_2},
+                ],
+            )
+
+            # Get token usage for second call
+            usage_2 = response_2.usage
+            if usage_2:
+                input_tokens_2 = usage_2.prompt_tokens
+                output_tokens_2 = usage_2.completion_tokens
+                total_tokens_2 = usage_2.total_tokens
+                cost_2 = (input_tokens_2 / 1_000_000) * INPUT_PRICE_PER_M + (
+                    output_tokens_2 / 1_000_000
+                ) * OUTPUT_PRICE_PER_M
+                total_cost += cost_2
+
+                log_entry_2 = f"{now},{input_tokens_2},{output_tokens_2},{total_tokens_2},{cost_2:.4f}\n"
+                with open(token_log_path, "a", encoding="utf-8") as f:
+                    f.write(log_entry_2)
+
+                print(
+                    f"Token usage (Step 2) - Input: {input_tokens_2}, Output: {output_tokens_2}, Total: {total_tokens_2}, Cost: ${cost_2:.4f}"
+                )
+
+            response_text_2 = (
+                response_2.choices[0].message.content if response_2.choices else ""
+            )
+            print(f"AI Response (Step 2):\n{response_text_2}")
+
+            # 记录 AI 第二轮原始回复
+            with open(
+                f"memory/ai_response_{now.replace(':', '-').replace(' ', '_')}_step2.log",
+                "w",
+                encoding="utf-8",
+            ) as f:
+                f.write(response_text_2 or "")
+
+            # 提取第二轮代码
+            code_blocks_2 = re.findall(
+                code_block_pattern, response_text_2 or "", re.DOTALL
+            )
+            if len(code_blocks_2) == 0:
+                python_code_2 = response_text_2.strip() if response_text_2 else ""
+            elif len(code_blocks_2) == 1:
+                python_code_2 = code_blocks_2[0].strip()
+            else:
+                python_code_2 = ""
+
+            if python_code_2:
+                with open("memory/last_script.py", "w", encoding="utf-8") as f:
+                    f.write(python_code_2)
+                try:
+                    old_stdout = sys.stdout
+                    sys.stdout = io.StringIO()
+                    exec(python_code_2, {})
+                    stdout_2 = sys.stdout.getvalue()
+                    sys.stdout = old_stdout
+                    stderr_2 = ""
+                except Exception as e:
+                    stdout_2 = ""
+                    stderr_2 = str(e)
+
+                with open("memory/last_execution.log", "a", encoding="utf-8") as f:
+                    f.write(
+                        f"\n--- 第二冲程: 执行与固化 ---\nStdout: {stdout_2}\nStderr: {stderr_2}"
+                    )
+
+                # 更新最终 thoughts
+                with open("memory/last_thoughts.md", "w", encoding="utf-8") as f:
+                    f.write(response_text_2 or "")
+        except Exception as e:
+            print(f"Error during second stroke execution: {e}")
 
 except Exception as e:
     print(f"Error during AI execution: {e}")
