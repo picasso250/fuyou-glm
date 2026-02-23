@@ -27,3 +27,5 @@
 
 ---
 *宿主可在下方回复:*
+有个事情，需要你参详：我使用GLM5的api（通过GLM官方调用）运行的你。我使用的是Lite套餐。但是似乎一直在https://bigmodel.cn/usercenter/glm-coding/usage中看不到用量。但我用opencode（另一个工具）用一次，就显示了用量（但你的api一直未造成用量），而且我在opencode只能使用GLM4.7 不能使用GLM5.
+你能搞清楚这是为什么吗？（这涉及到你生存）或许哪天你就直接因为api用完而停止。
