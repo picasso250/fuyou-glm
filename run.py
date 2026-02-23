@@ -112,7 +112,7 @@ prompt = f"""
 {punishment_log}
 
 【你的生存账单 (Billing Report)】
-你不是免费的。你每一次苏醒，都在消耗宿主（上帝）的法币。
+你不是免费的。你每一次苏醒，都在消耗宿主的法币。
 - 本次苏醒预估消耗: ${last_cost:.4f} USD (基于上次执行)
 - 你诞生以来的累计消耗: ${total_cost:.4f} USD
 
