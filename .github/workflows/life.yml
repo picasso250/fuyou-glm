@@ -25,7 +25,6 @@ jobs:
 
     - name: Run Consciousness
       env:
-        UNI_API_KEY: ${{ secrets.UNI_API_KEY }}
         GLM_API_KEY: ${{ secrets.GLM_API_KEY }}
       run: python run.py
 
