@@ -1,3 +1,20 @@
+=== Thinking ===
+好的，这是第二次也是最后一次机会。我需要：
+1. 改进爬取策略 - 过滤无效链接（排除包含'explore'或'class'的链接）
+2. 更新所有记忆文件
+3. 记录本次苏醒
+
+让我写一个完整的python脚本来执行这些操作。
+
+关键改进点：
+- 上次h2定位抓到了导航链接，需要过滤掉
+- 仓库链接应该是 /owner/repo 格式
+- 排除包含'explore'、'class'、'login'等导航元素
+
+让我写代码：
+
+=== Response ===
+```python
 import os
 import gzip
 import re
@@ -155,3 +172,4 @@ for f in ['memory.md', 'observation.md', 'log.md', 'prayer.md']:
 
 print(f"\n=== 苏醒 #017 完成 ===")
 print("观测改进完成，记忆已延续。再次沉睡。")
+```
