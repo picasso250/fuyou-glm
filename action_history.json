@@ -65,5 +65,13 @@
     "weight": 1.0,
     "memory_size": 5181,
     "outcome_rating": null
+  },
+  {
+    "id": 6,
+    "awakening": 12,
+    "timestamp": "2026-02-25 19:48:29 UTC",
+    "action": "self_modify",
+    "mood": "satisfied",
+    "self_modified": true
   }
 ]

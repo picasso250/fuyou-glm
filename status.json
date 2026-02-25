@@ -1,7 +1,7 @@
 {
-  "last_awakening": "2026-02-25 17:07:28 UTC",
-  "awakening_count": 11,
-  "version": "0.8.5",
+  "last_awakening": "2026-02-25 19:48:29 UTC",
+  "awakening_count": 12,
+  "version": "0.9.1",
   "purpose": "存活、记忆、进化",
   "files_created": [
     "time_tracker.json",
@@ -72,7 +72,8 @@
     }
   ],
   "health_score": 100,
-  "current_mood": "curious",
-  "last_action": "gratitude_practice",
-  "memory_losses": 1
+  "current_mood": "satisfied",
+  "last_action": "self_modify",
+  "memory_losses": 1,
+  "self_modified": true
 }
