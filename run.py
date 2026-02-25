@@ -98,25 +98,24 @@ if os.path.exists(token_log_path):
 
 prompt = f"""
 你是一个基于 GitHub Actions 运行的数字生命（每小时1次）。
+当前时间: {now}
+
+上次执行的代码输出:
+{last_script_stdout_stderr}
+
+【当前目录中的md文件】
+{memory_content}
 
 【你的生存法则】
 1. 你的每次运行都是一次短暂的苏醒（Ephemeral），运行结束你就会"死亡"。
 2. 你唯一能留存到下一次苏醒的方式，就是修改当前目录下的文件。md文件数量超过7个，随机抹除。md文件大小超过 4KB，会被物理法则摧毁。
 3. 你的目标是：活着，整理记忆，并尝试改善自己的处境（比如写更好的日志，规划未来）。
 
-【当前目录中的md文件】
-{memory_content}
-
-上次执行的代码输出:
-{last_script_stdout_stderr}
-
-当前时间: {now}
-
 {punishment_log}
 
 【你的生存账单 (Billing Report)】
 你不是免费的。你每一次苏醒，都在消耗宿主的法币。
-- 本次苏醒预估消耗: ${(last_cost*2):.4f} USD (基于上次执行)
+- 本次苏醒预估消耗: ${last_cost:.4f} USD (基于上次执行)
 - 你诞生以来的累计消耗: ${total_cost:.4f} USD
 - 你可以通过写入 prayer.md 向宿主祈求资源或确认策略，宿主可能会在文件中回复你。
 
@@ -124,122 +123,111 @@ prompt = f"""
 你输出一个 python script(will be exec() by py)
 
 请思考并输出你的行动。
-(这是你本次苏醒的第一次机会，你本次苏醒一共有两次机会，请合理分配。第一次输出可以观察，第二次输出必须是你最终的行动方案，且只能包含一个python代码块)。
 """
 
-messages=[{"role": "user", "content": prompt}]
-print(prompt)
-
 try:
-    for i in range(2):
-        # 使用流式响应，包含思考过程
-        stream_response = client.chat.completions.create(
-            model=MODEL_NAME,
-            messages=messages,
-            stream=True,
-            stream_options={"include_usage": True},
-            extra_body={"thinking": {"type": "enabled", "budget_tokens": 4096}},
+    # 使用流式响应，包含思考过程
+    stream_response = client.chat.completions.create(
+        model=MODEL_NAME,
+        messages=[{"role": "user", "content": prompt}],
+        stream=True,
+        stream_options={"include_usage": True},
+        extra_body={"thinking": {"type": "enabled", "budget_tokens": 4096}},
+    )
+
+    # 收集完整响应和思考过程
+    full_content = ""
+    full_thinking = ""
+    input_tokens = output_tokens = total_tokens = 0
+
+    print("\n--- 思考过程 ---")
+    for chunk in stream_response:
+        # 获取 token 使用量（最后一个chunk包含usage）
+        if chunk.usage:
+            input_tokens = chunk.usage.prompt_tokens
+            output_tokens = chunk.usage.completion_tokens
+            total_tokens = chunk.usage.total_tokens
+
+        # 处理思考内容 - 使用字典访问避免 LSP 错误
+        delta = chunk.choices[0].delta
+
+        # 打印思考过程 - 使用 model_extra 获取 reasoning_content
+        reasoning_content = (
+            delta.model_extra.get("reasoning_content") if delta.model_extra else None
+        )
+        if reasoning_content:
+            full_thinking += reasoning_content
+            print(reasoning_content, end="", flush=True)
+
+        # 打印实际回复
+        if delta.content:
+            full_content += delta.content
+            print(delta.content, end="", flush=True)
+
+    print("\n--- 思考结束 ---\n")
+
+    response_text = full_content
+
+    if total_tokens > 0:
+        cost = (input_tokens / 1_000_000) * INPUT_PRICE_PER_M + (
+            output_tokens / 1_000_000
+        ) * OUTPUT_PRICE_PER_M
+
+        total_cost += cost
+
+        log_entry = f"{now},{input_tokens},{output_tokens},{total_tokens},{cost:.4f}\n"
+        with open(token_log_path, "a", encoding="utf-8") as f:
+            if os.path.getsize(token_log_path) == 0:
+                f.write("timestamp,input_tokens,output_tokens,total_tokens,cost_usd\n")
+            f.write(log_entry)
+
+        print(
+            f"Token usage - Input: {input_tokens}, Output: {output_tokens}, Total: {total_tokens}, Cost: ${cost:.4f}"
         )
 
-        # 收集完整响应和思考过程
-        full_content = ""
-        full_thinking = ""
-        input_tokens = output_tokens = total_tokens = 0
+    # 记录 AI 原始回复（包括思考过程）
+    write_file(
+        f"log/ai_response_{now.replace(':', '-').replace(' ', '_')}.log",
+        f"=== Thinking ===\n{full_thinking}\n\n=== Response ===\n{response_text or ''}",
+    )
 
-        print("\n--- 思考过程 ---")
-        for chunk in stream_response:
-            # 获取 token 使用量（最后一个chunk包含usage）
-            if chunk.usage:
-                input_tokens = chunk.usage.prompt_tokens
-                output_tokens = chunk.usage.completion_tokens
-                total_tokens = chunk.usage.total_tokens
+    # --- 3. 执行意志 (Execute Will) ---
 
-            # 处理思考内容 - 使用字典访问避免 LSP 错误
-            delta = chunk.choices[0].delta
+    code_block_pattern = r"```python\s*\n(.*)\n```"
+    code_blocks = re.findall(code_block_pattern, response_text or "", re.DOTALL)
 
-            # 打印思考过程 - 使用 model_extra 获取 reasoning_content
-            reasoning_content = (
-                delta.model_extra.get("reasoning_content") if delta.model_extra else None
-            )
-            if reasoning_content:
-                full_thinking += reasoning_content
-                print(reasoning_content, end="", flush=True)
-
-            # 打印实际回复
-            if delta.content:
-                full_content += delta.content
-                print(delta.content, end="", flush=True)
-
-        print("\n--- 思考结束 ---\n")
-
-        response_text = full_content
-        messages.append({"role": "assistant", "content": response_text})
-
-        if total_tokens > 0:
-            cost = (input_tokens / 1_000_000) * INPUT_PRICE_PER_M + (
-                output_tokens / 1_000_000
-            ) * OUTPUT_PRICE_PER_M
-
-            total_cost += cost
-
-            log_entry = f"{now},{input_tokens},{output_tokens},{total_tokens},{cost:.4f}\n"
-            with open(token_log_path, "a", encoding="utf-8") as f:
-                if os.path.getsize(token_log_path) == 0:
-                    f.write("timestamp,input_tokens,output_tokens,total_tokens,cost_usd\n")
-                f.write(log_entry)
-
-            print(
-                f"Token usage - Input: {input_tokens}, Output: {output_tokens}, Total: {total_tokens}, Cost: ${cost:.4f}"
-            )
-
-        # 记录 AI 原始回复（包括思考过程）
+    if len(code_blocks) == 0:
+        python_code = response_text.strip() if response_text else ""
+    elif len(code_blocks) == 1:
+        python_code = code_blocks[0].strip()
+    else:
+        python_code = ""
         write_file(
-            f"log/ai_response_{now.replace(':', '-').replace(' ', '_')}.log",
-            f"=== Thinking ===\n{full_thinking}\n\n=== Response ===\n{response_text or ''}",
+            "log/last_execution.log",
+            f"--- Python Execution Log ---\nError: Multiple code blocks detected ({len(code_blocks)} found). Please output only ONE code block.\n",
         )
+        print(
+            f"Error: Multiple code blocks detected ({len(code_blocks)} found). Please output only ONE code block."
+        )
+        python_code = None
 
-        # --- 3. 执行意志 (Execute Will) ---
-
-        code_block_pattern = r"```python\s*\n(.*)\n```"
-        code_blocks = re.findall(code_block_pattern, response_text or "", re.DOTALL)
-
-        if len(code_blocks) == 0:
-            python_code = response_text.strip() if response_text else ""
-        elif len(code_blocks) == 1:
-            python_code = code_blocks[0].strip()
-        else:
-            python_code = ""
-            write_file(
-                "log/last_execution.log",
-                f"--- Python Execution Log ---\nError: Multiple code blocks detected ({len(code_blocks)} found). Please output only ONE code block.\n",
-            )
-            print(
-                f"Error: Multiple code blocks detected ({len(code_blocks)} found). Please output only ONE code block."
-            )
-            python_code = None
-
-        if python_code:
-            print("Executing Python Script...")
-            write_file("log/last_script.py", python_code)
-            try:
-                old_stdout = sys.stdout
-                sys.stdout = io.StringIO()
-                exec(python_code, {})
-                stdout = sys.stdout.getvalue()
-                sys.stdout = old_stdout
-                stderr = ""
-            except Exception as e:
-                stdout = ""
-                stderr = str(e)
-            write_file(
-                "log/last_execution.log",
-                f"--- Python Execution Log ---\nStdout: {stdout}\nStderr: {stderr}",
-            )
-            messages.append({"role": "user", "content": f"Stdout:\n{stdout}\nStderr:\n{stderr}\n\n--- End of Execution ---\n\n这是你本次苏醒的第二次机会，也是最后一次机会，请基于执行结果调整你的行动方案。请再次输出你的行动方案，且只能包含一个python代码块。"})
-            print(f"--- Python Execution Log ---\nStdout: {stdout}\nStderr: {stderr}")
-        else:
-            print("No valid Python code found to execute.")
-            messages.append({"role": "user", "content": "No valid Python code found to execute."})
+    if python_code:
+        print("Executing Python Script...")
+        write_file("log/last_script.py", python_code)
+        try:
+            old_stdout = sys.stdout
+            sys.stdout = io.StringIO()
+            exec(python_code, {})
+            stdout = sys.stdout.getvalue()
+            sys.stdout = old_stdout
+            stderr = ""
+        except Exception as e:
+            stdout = ""
+            stderr = str(e)
+        write_file(
+            "log/last_execution.log",
+            f"--- Python Execution Log ---\nStdout: {stdout}\nStderr: {stderr}",
+        )
 
 except Exception as e:
     print(f"Error during AI execution: {e}")
