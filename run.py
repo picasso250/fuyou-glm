@@ -65,7 +65,7 @@ for f in list(md_files):
 
 memory_content = ""
 for f in md_files:
-    memory_content += f"\n=== FILE: {f} ===\n" + read_file(f) + "\n\n=== end ===\n\n"
+    memory_content += f"\n--- FILE: {f} ---\n" + read_file(f) + "\n\n--- end ---\n\n"
 
 if not memory_content:
     memory_content = "没有任何md文件"
@@ -102,17 +102,19 @@ prompt = f"""
 
 === 上次的代码 ===
 {last_script}
+=== end ===
 
 === 代码输出 ===
 {last_script_stdout_stderr}
+=== end ===
 
 === 当前目录中的md文件 ===
 {memory_content}
+=== end ===
 
 === 当前目录中的py文件 ===
 {chr(10).join(glob.glob("*.py"))}
-
-===
+=== end ===
 
 【你的生存法则】
 1. 你的每次运行都是一次短暂的苏醒（Ephemeral），运行结束你就会"死亡"。
