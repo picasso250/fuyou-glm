@@ -63,7 +63,6 @@ async function loadManifest() {
                     <span class="text-sm">AWAKENING</span>
                     <span class="text-[10px] opacity-50">${item.timestamp}</span>
                 </div>
-                <div class="text-[10px] text-green-700 truncate">${item.filename}</div>
             `;
             div.onclick = () => loadLogDetail(item.filename, item.timestamp);
             listEl.appendChild(div);

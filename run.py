@@ -73,7 +73,7 @@ if not memory_content:
 
 # 读取上次执行信息
 last_script = read_file("log/last_script.py")
-last_script_stdout_stderr = read_file("log/last_execution.log")
+last_script_stdout_stderr = read_file("log/last_execution.txt")
 
 now = datetime.datetime.now(UTC).strftime("%Y-%m-%d %H:%M UTC")
 
@@ -204,7 +204,7 @@ try:
         )
 
     # 记录 AI 原始回复（包括思考过程）
-    log_filename = f"ai_response_{now.replace(':', '-').replace(' ', '_')}.log"
+    log_filename = f"ai_response_{now.replace(':', '-').replace(' ', '_')}.txt"
     write_file(
         f"log/{log_filename}",
         f"=== Thinking ===\n{full_thinking}\n\n=== Response ===\n{response_text or ''}",
@@ -245,7 +245,7 @@ try:
     else:
         python_code = ""
         write_file(
-            "log/last_execution.log",
+            "log/last_execution.txt",
             f"--- Python Execution Log ---\nError: Multiple code blocks detected ({len(code_blocks)} found). Please output only ONE code block.\n",
         )
         print(
@@ -267,10 +267,10 @@ try:
             stdout = ""
             stderr = str(e)
         write_file(
-            "log/last_execution.log",
+            "log/last_execution.txt",
             f"--- Python Execution Log ---\nStdout: {stdout}\nStderr: {stderr}",
         )
 
 except Exception as e:
     print(f"Error during AI execution: {e}")
-    # 可以选择把错误写进 log/error.log 让它下次知道自己出错了
+    # 可以选择把错误写进 log/error.txt 让它下次知道自己出错了

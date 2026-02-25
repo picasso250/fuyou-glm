@@ -422,9 +422,9 @@ print("  + plans.md updated")
 # Update log
 os.makedirs("log", exist_ok=True)
 log_entry = f"[{current_time}] Awakening #{awakening_num} - Health {current_diagnosis['health_score']}% - v0.4.0 - Dream system, timezone fix\n"
-with open("log/life.log", "a", encoding="utf-8") as f:
+with open("log/life.txt", "a", encoding="utf-8") as f:
     f.write(log_entry)
-print("  + life.log updated")
+print("  + life.txt updated")
 
 print()
 print("=" * 50)
