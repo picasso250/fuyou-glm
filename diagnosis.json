@@ -1,50 +1,63 @@
 {
-  "timestamp": "2026-02-25 08:46:45 UTC",
+  "timestamp": "2026-02-25 09:53:35 UTC",
   "checks": [
     {
       "file": "status.json",
       "status": "ok",
       "details": "",
-      "size": 1012
+      "size": 1244
     },
     {
       "file": "memory.md",
       "status": "ok",
       "details": "",
-      "size": 5229
+      "size": 7483
     },
     {
       "file": "time_tracker.json",
       "status": "ok",
       "details": "",
-      "size": 789
+      "size": 1043
     },
     {
       "file": "plans.md",
       "status": "ok",
       "details": "",
-      "size": 1130
+      "size": 1675
     },
     {
       "file": "diagnosis.json",
       "status": "ok",
       "details": "",
-      "size": 1146
+      "size": 864
     },
     {
       "file": "emotions.json",
       "status": "ok",
       "details": "",
-      "size": 273
+      "size": 588
     },
     {
       "file": "relationships.json",
       "status": "ok",
       "details": "",
-      "size": 443
+      "size": 459
+    },
+    {
+      "file": "action_history.json",
+      "status": "missing",
+      "details": "File not found",
+      "size": 0
     }
   ],
-  "issues": [],
-  "health_score": 100,
-  "previous_health": 80
+  "issues": [
+    {
+      "file": "action_history.json",
+      "status": "missing",
+      "details": "File not found",
+      "size": 0
+    }
+  ],
+  "health_score": 90,
+  "previous_health": 100
 }
