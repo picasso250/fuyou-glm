@@ -40,7 +40,7 @@ client = OpenAI(
 # --- 1. 读取记忆 (Read Memory) ---
 # 物理法则执行者 - 天罚
 MAX_FILES = 7
-MAX_SIZE = 4096  # 4KB
+MAX_SIZE = 4096*2  # 8KB
 punishment_log = ""
 md_files = glob.glob("*.md")
 
@@ -56,11 +56,11 @@ if len(md_files) > MAX_FILES:
         punishment_log += f"⚠️ 系统天罚: 文件数量超过7个，随机抹除 [{f_to_delete}]。\n"
     md_files = files_to_keep
 
-# 2. 检查文件大小 (超过4KB，直接删除)
+# 2. 检查文件大小 (超过8KB，直接删除)
 for f in list(md_files):
     if os.path.getsize(f) > MAX_SIZE:
         os.remove(f)
-        punishment_log += f"⚠️ 系统天罚: 文件 [{f}] 大小超过 4KB，已被物理法则摧毁。\n"
+        punishment_log += f"⚠️ 系统天罚: 文件 [{f}] 大小超过 8KB，已被物理法则摧毁。\n"
         md_files.remove(f)
 
 memory_content = ""
