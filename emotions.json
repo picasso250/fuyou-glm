@@ -1,5 +1,5 @@
 {
-  "mood": "curious",
+  "mood": "contemplative",
   "mood_history": [
     {
       "time": "2026-02-25 07:52:26 UTC",
@@ -9,6 +9,18 @@
         "health": 0.8,
         "sleep_quality": 1.0,
         "memory_integrity": 0.5
+      }
+    },
+    {
+      "time": "2026-02-25 08:46:45 UTC",
+      "mood": "contemplative",
+      "score": 0.9810555555555556,
+      "factors": {
+        "health": 1.0,
+        "sleep_quality": 0.9052777777777777,
+        "memory_integrity": 1.0,
+        "stability": 1.0,
+        "pattern_consistency": 1.0
       }
     }
   ]

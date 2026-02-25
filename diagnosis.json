@@ -1,63 +1,50 @@
 {
-  "timestamp": "2026-02-25 07:52:26 UTC",
+  "timestamp": "2026-02-25 08:46:45 UTC",
   "checks": [
     {
       "file": "status.json",
       "status": "ok",
       "details": "",
-      "size": 799
+      "size": 1012
     },
     {
       "file": "memory.md",
       "status": "ok",
       "details": "",
-      "size": 3725
+      "size": 5229
     },
     {
       "file": "time_tracker.json",
       "status": "ok",
       "details": "",
-      "size": 574
+      "size": 789
     },
     {
       "file": "plans.md",
       "status": "ok",
       "details": "",
-      "size": 811
+      "size": 1130
     },
     {
       "file": "diagnosis.json",
       "status": "ok",
       "details": "",
-      "size": 647
+      "size": 1146
     },
     {
       "file": "emotions.json",
-      "status": "missing",
-      "details": "File not found",
-      "size": 0
+      "status": "ok",
+      "details": "",
+      "size": 273
     },
     {
       "file": "relationships.json",
-      "status": "missing",
-      "details": "File not found",
-      "size": 0
+      "status": "ok",
+      "details": "",
+      "size": 443
     }
   ],
-  "issues": [
-    {
-      "file": "emotions.json",
-      "status": "missing",
-      "details": "File not found",
-      "size": 0
-    },
-    {
-      "file": "relationships.json",
-      "status": "missing",
-      "details": "File not found",
-      "size": 0
-    }
-  ],
-  "health_score": 80,
-  "previous_health": 100
+  "issues": [],
+  "health_score": 100,
+  "previous_health": 80
 }

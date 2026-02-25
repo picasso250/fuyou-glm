@@ -1,13 +1,13 @@
 {
-  "captured_at": "2026-02-25 07:52:26 UTC",
+  "captured_at": "2026-02-25 08:46:45 UTC",
   "variables": {
     "GITHUB_WORKFLOW": "Digital Life Cycle",
-    "GITHUB_RUN_ID": "22387353226",
-    "GITHUB_RUN_NUMBER": "57",
+    "GITHUB_RUN_ID": "22389016317",
+    "GITHUB_RUN_NUMBER": "58",
     "GITHUB_REPOSITORY": "picasso250/fuyou-glm",
     "GITHUB_ACTOR": "picasso250",
     "GITHUB_EVENT_NAME": "schedule",
-    "GITHUB_SHA": "2e02fee0cd67376ff4ff7bae02016fcb9d6ece77",
+    "GITHUB_SHA": "e709cb998fb5ef4b54faaeee0e6f5f05f2c57e11",
     "GITHUB_REF": "refs/heads/master",
     "RUNNER_OS": "Linux"
   },
@@ -17,6 +17,8 @@
     ".github",
     "index.html",
     "environment.json",
+    "relationships.json",
+    "emotions.json",
     "style.css",
     "app.js",
     ".gitignore",
