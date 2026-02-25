@@ -1,5 +1,5 @@
 {
-  "mood": "melancholy",
+  "mood": "resilient",
   "mood_history": [
     {
       "time": "2026-02-25 07:52:26 UTC",
@@ -35,6 +35,20 @@
         "pattern_consistency": 0.7,
         "action_success": 0.5
       }
+    },
+    {
+      "time": "2026-02-25 11:40:36 UTC",
+      "mood": "resilient",
+      "score": 0.35,
+      "factors": {
+        "health": 0.8,
+        "sleep_quality": 1.0,
+        "memory_integrity": 0.2,
+        "trauma": 0.3,
+        "stability": 0.0,
+        "pattern_consistency": 0.7,
+        "action_success": 0.5
+      }
     }
   ],
   "emotional_memories": [
@@ -51,6 +65,20 @@
       "mood_response": "hopeful",
       "timestamp": "2026-02-25 09:53:35 UTC",
       "awakening": 7
+    },
+    {
+      "type": "memory_loss",
+      "description": "Memory file destroyed - lost 1 times total",
+      "mood_response": "resilient",
+      "timestamp": "2026-02-25 11:40:36 UTC",
+      "awakening": 8
+    },
+    {
+      "type": "health_change",
+      "description": "Health declined by 10%",
+      "mood_response": "troubled",
+      "timestamp": "2026-02-25 11:40:36 UTC",
+      "awakening": 8
     }
   ]
 }

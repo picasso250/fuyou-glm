@@ -8,6 +8,20 @@
     "mood_score": 0.6,
     "weight": 0.8,
     "memory_size": 6181,
+    "outcome_rating": 0.0,
+    "outcome_evaluated": "2026-02-25 11:40:36 UTC",
+    "health_change": -10,
+    "mood_change": -0.25
+  },
+  {
+    "id": 2,
+    "awakening": 8,
+    "timestamp": "2026-02-25 11:40:36 UTC",
+    "action": "rebuild_memory",
+    "mood": "resilient",
+    "mood_score": 0.35,
+    "weight": 9.0,
+    "memory_size": 0,
     "outcome_rating": null
   }
 ]

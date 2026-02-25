@@ -1,50 +1,56 @@
 {
-  "timestamp": "2026-02-25 09:53:35 UTC",
+  "timestamp": "2026-02-25 11:40:36 UTC",
   "checks": [
     {
       "file": "status.json",
       "status": "ok",
       "details": "",
-      "size": 1244
+      "size": 1440
     },
     {
       "file": "memory.md",
-      "status": "ok",
-      "details": "",
-      "size": 7483
+      "status": "missing",
+      "details": "File not found",
+      "size": 0
     },
     {
       "file": "time_tracker.json",
       "status": "ok",
       "details": "",
-      "size": 1043
+      "size": 1298
     },
     {
       "file": "plans.md",
       "status": "ok",
       "details": "",
-      "size": 1675
+      "size": 1605
     },
     {
       "file": "diagnosis.json",
       "status": "ok",
       "details": "",
-      "size": 864
+      "size": 1122
     },
     {
       "file": "emotions.json",
       "status": "ok",
       "details": "",
-      "size": 588
+      "size": 1318
     },
     {
       "file": "relationships.json",
       "status": "ok",
       "details": "",
-      "size": 459
+      "size": 443
     },
     {
       "file": "action_history.json",
+      "status": "ok",
+      "details": "",
+      "size": 244
+    },
+    {
+      "file": "memory_archive.json",
       "status": "missing",
       "details": "File not found",
       "size": 0
@@ -52,12 +58,18 @@
   ],
   "issues": [
     {
-      "file": "action_history.json",
+      "file": "memory.md",
+      "status": "missing",
+      "details": "File not found",
+      "size": 0
+    },
+    {
+      "file": "memory_archive.json",
       "status": "missing",
       "details": "File not found",
       "size": 0
     }
   ],
-  "health_score": 90,
-  "previous_health": 100
+  "health_score": 80,
+  "previous_health": 90
 }

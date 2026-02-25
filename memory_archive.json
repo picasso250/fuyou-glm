@@ -1,0 +1,13 @@
+{
+  "entries": [
+    {
+      "time": "2026-02-25 11:40:36 UTC",
+      "awakening": 8,
+      "mood": "resilient",
+      "action": "rebuild_memory",
+      "summary": "Awakening #8: rebuild_memory (resilient) - Fixed None bug",
+      "health": 80,
+      "memory_lost": true
+    }
+  ]
+}
