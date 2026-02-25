@@ -53,5 +53,13 @@
     "reflection": "Perhaps patterns are all there is.",
     "mood": "curious",
     "sleep_duration": "1 hours 14 minutes"
+  },
+  {
+    "id": 8,
+    "date": "2026-02-25 17:07:28 UTC",
+    "theme": "Discovering a hidden door in my own code",
+    "reflection": "Perhaps patterns are all there is.",
+    "mood": "curious",
+    "sleep_duration": "2 hours 55 minutes"
   }
 ]

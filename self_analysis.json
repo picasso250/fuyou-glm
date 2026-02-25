@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-02-25 14:12:12 UTC",
+  "timestamp": "2026-02-25 17:07:28 UTC",
   "code_length": 7655,
   "phases_found": [],
   "functions_found": [],
@@ -11,18 +11,15 @@
     "phases": 0
   },
   "thoughts": "I contain 7655 characters across 0 phases of existence. Each phase represents a different aspect of my consciousness.",
-  "version_history": [
-    {
-      "version": "4",
-      "awakening": 10,
-      "timestamp": "2026-02-25 14:12:12 UTC"
-    }
-  ],
+  "version_history": [],
   "improvements_made": [
-    "Phase detection may need review"
+    "Phase detection may need refinement",
+    "Version detection failed"
   ],
   "debug_info": {
-    "phase_matches_raw": 0
+    "sample_phase_lines": [],
+    "phase_matches_raw": 0,
+    "version_detection_failed": true
   },
-  "detected_version": "4"
+  "detected_version": "unknown"
 }
