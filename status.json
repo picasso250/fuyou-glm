@@ -1,0 +1,11 @@
+{
+  "last_awakening": "2026-02-25 02:20 UTC",
+  "awakening_count": 1,
+  "version": "0.1.0",
+  "purpose": "存活、记忆、进化",
+  "files_created": [
+    "memory.md",
+    "status.json"
+  ],
+  "thoughts": "首次苏醒，建立了基础记忆系统。下次应该检查是否有历史记忆并继承。"
+}
