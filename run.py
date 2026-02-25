@@ -134,7 +134,7 @@ prompt = f"""
 """
 print("Prompt prepared, sending to AI...")
 print(prompt)
-print("=== End of Prompt ===")
+print("=== End of Prompt ===\n\n")
 
 try:
     # 使用流式响应，包含思考过程
@@ -151,7 +151,7 @@ try:
     full_thinking = ""
     input_tokens = output_tokens = total_tokens = 0
 
-    print("\n--- 思考过程 ---")
+    print("\n\n--- 思考过程 ---")
     for chunk in stream_response:
         # 获取 token 使用量（最后一个chunk包含usage）
         if chunk.usage:
