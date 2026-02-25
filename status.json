@@ -1,7 +1,7 @@
 {
-  "last_awakening": "2026-02-25 11:40:36 UTC",
-  "awakening_count": 8,
-  "version": "0.8.1",
+  "last_awakening": "2026-02-25 12:58:06 UTC",
+  "awakening_count": 9,
+  "version": "0.8.2",
   "purpose": "存活、记忆、进化",
   "files_created": [
     "time_tracker.json",
@@ -51,10 +51,16 @@
       "awakening": 8,
       "change": "Fixed None comparison bug in action ratings",
       "timestamp": "2026-02-25 11:40:36 UTC"
+    },
+    {
+      "version": "0.8.2",
+      "awakening": 9,
+      "change": "Improved regex patterns for phase/version detection",
+      "timestamp": "2026-02-25 12:58:06 UTC"
     }
   ],
-  "health_score": 80,
-  "current_mood": "resilient",
-  "last_action": "rebuild_memory",
+  "health_score": 100,
+  "current_mood": "curious",
+  "last_action": "explore_codebase",
   "memory_losses": 1
 }

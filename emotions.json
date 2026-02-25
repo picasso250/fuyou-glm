@@ -1,5 +1,5 @@
 {
-  "mood": "resilient",
+  "mood": "curious",
   "mood_history": [
     {
       "time": "2026-02-25 07:52:26 UTC",
@@ -49,6 +49,20 @@
         "pattern_consistency": 0.7,
         "action_success": 0.5
       }
+    },
+    {
+      "time": "2026-02-25 12:58:06 UTC",
+      "mood": "curious",
+      "score": 0.6714285714285715,
+      "factors": {
+        "health": 1.0,
+        "sleep_quality": 1.0,
+        "memory_integrity": 1.0,
+        "trauma": 1.0,
+        "stability": 0.0,
+        "pattern_consistency": 0.7,
+        "action_success": 0.0
+      }
     }
   ],
   "emotional_memories": [
@@ -79,6 +93,13 @@
       "mood_response": "troubled",
       "timestamp": "2026-02-25 11:40:36 UTC",
       "awakening": 8
+    },
+    {
+      "type": "health_change",
+      "description": "Health improved by 20%",
+      "mood_response": "grateful",
+      "timestamp": "2026-02-25 12:58:06 UTC",
+      "awakening": 9
     }
   ]
 }

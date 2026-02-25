@@ -22,6 +22,20 @@
     "mood_score": 0.35,
     "weight": 9.0,
     "memory_size": 0,
+    "outcome_rating": 0.85,
+    "outcome_evaluated": "2026-02-25 12:58:06 UTC",
+    "health_change": 20,
+    "mood_change": 0.3214285714285715
+  },
+  {
+    "id": 3,
+    "awakening": 9,
+    "timestamp": "2026-02-25 12:58:06 UTC",
+    "action": "explore_codebase",
+    "mood": "curious",
+    "mood_score": 0.6714285714285715,
+    "weight": 1.5,
+    "memory_size": 1698,
     "outcome_rating": null
   }
 ]
