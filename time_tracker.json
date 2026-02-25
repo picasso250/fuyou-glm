@@ -11,6 +11,13 @@
       "time": "2026-02-25 04:00:16 UTC",
       "time_since_last": "解析错误: can't subtract offset-naive and offset-aware datetimes",
       "health_score": 100
+    },
+    {
+      "num": 4,
+      "time": "2026-02-25 06:40:08 UTC",
+      "time_since_last_seconds": 9592,
+      "time_since_last_readable": "2 hours 39 minutes",
+      "health_score": 100
     }
   ]
 }
