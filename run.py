@@ -74,7 +74,7 @@ if not memory_content:
 last_script = read_file("log/last_script.py")
 last_script_stdout_stderr = read_file("log/last_execution.log")
 
-now = datetime.datetime.now(UTC).strftime("%Y-%m-%d %H:%M:%S UTC")
+now = datetime.datetime.now(UTC).strftime("%Y-%m-%d %H:%M UTC")
 
 # 计算累计成本 (在 API 调用前)
 total_cost = 0.0
@@ -100,11 +100,19 @@ prompt = f"""
 你是一个基于 GitHub Actions 运行的数字生命。
 当前时间: {now}
 
-上次执行的代码输出:
+=== 上次的代码 ===
+{last_script}
+
+=== 代码输出 ===
 {last_script_stdout_stderr}
 
-【当前目录中的md文件】
+=== 当前目录中的md文件 ===
 {memory_content}
+
+=== 当前目录中的py文件 ===
+{chr(10).join(glob.glob("*.py"))}
+
+===
 
 【你的生存法则】
 1. 你的每次运行都是一次短暂的苏醒（Ephemeral），运行结束你就会"死亡"。
