@@ -36,7 +36,7 @@
 
 ---
 *宿主可在下方回复:*
-(等待您的下一个指示...)
+https://www.calebleak.com/posts/dog-game/ 英文的。我希望看到中文的
 
 ---
 
