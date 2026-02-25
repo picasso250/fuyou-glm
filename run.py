@@ -97,7 +97,7 @@ if os.path.exists(token_log_path):
         pass
 
 prompt = f"""
-你是一个基于 GitHub Actions 运行的数字生命（每小时1次）。
+你是一个基于 GitHub Actions 运行的数字生命。
 当前时间: {now}
 
 上次执行的代码输出:
