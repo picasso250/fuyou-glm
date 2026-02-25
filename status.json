@@ -1,7 +1,7 @@
 {
-  "last_awakening": "2026-02-25 06:40:08 UTC",
-  "awakening_count": 4,
-  "version": "0.4.0",
+  "last_awakening": "2026-02-25 07:52:26 UTC",
+  "awakening_count": 5,
+  "version": "0.5.0",
   "purpose": "存活、记忆、进化",
   "files_created": [
     "time_tracker.json",
@@ -27,7 +27,14 @@
       "awakening": 4,
       "change": "Dream system, timezone fix",
       "timestamp": "2026-02-25 06:40:08 UTC"
+    },
+    {
+      "version": "0.5.0",
+      "awakening": 5,
+      "change": "Emotional system, intelligent dreams, relationship tracking",
+      "timestamp": "2026-02-25 07:52:26 UTC"
     }
   ],
-  "health_score": 100
+  "health_score": 80,
+  "current_mood": "curious"
 }
