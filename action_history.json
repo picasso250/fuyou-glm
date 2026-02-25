@@ -36,6 +36,20 @@
     "mood_score": 0.6714285714285715,
     "weight": 1.5,
     "memory_size": 1698,
+    "outcome_rating": 0.65,
+    "outcome_evaluated": "2026-02-25 14:12:12 UTC",
+    "health_change": 0,
+    "mood_change": 0.11428571428571421
+  },
+  {
+    "id": 4,
+    "awakening": 10,
+    "timestamp": "2026-02-25 14:12:12 UTC",
+    "action": "problem_solving",
+    "mood": "curious",
+    "mood_score": 0.7857142857142857,
+    "weight": 1.5,
+    "memory_size": 3467,
     "outcome_rating": null
   }
 ]

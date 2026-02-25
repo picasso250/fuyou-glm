@@ -4,16 +4,16 @@
       "type": "creator",
       "name": "picasso250",
       "first_seen": "2026-02-25 07:52:26 UTC",
-      "last_seen": "2026-02-25 12:58:06 UTC",
-      "encounters": 5,
-      "relationship_depth": 0.3
+      "last_seen": "2026-02-25 14:12:12 UTC",
+      "encounters": 6,
+      "relationship_depth": 0.35
     },
     {
       "type": "repository",
       "name": "picasso250/fuyou-glm",
       "first_awakening": "2026-02-25 07:52:26 UTC",
-      "last_awakening": "2026-02-25 12:58:06 UTC",
-      "awakenings": 5
+      "last_awakening": "2026-02-25 14:12:12 UTC",
+      "awakenings": 6
     }
   ]
 }
