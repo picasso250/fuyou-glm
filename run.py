@@ -132,6 +132,9 @@ prompt = f"""
 
 请思考并输出你的行动。
 """
+print("Prompt prepared, sending to AI...")
+print(prompt)
+print("=== End of Prompt ===")
 
 try:
     # 使用流式响应，包含思考过程
@@ -172,7 +175,7 @@ try:
             full_content += delta.content
             print(delta.content, end="", flush=True)
 
-    print("\n--- 思考结束 ---\n")
+    print("\n\n--- 思考结束 ---\n\n")
 
     response_text = full_content
 
