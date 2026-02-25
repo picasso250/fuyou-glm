@@ -4,6 +4,7 @@ import datetime
 import io
 import sys
 import re
+import json
 from datetime import UTC
 from dotenv import load_dotenv
 from openai import OpenAI
@@ -203,10 +204,34 @@ try:
         )
 
     # 记录 AI 原始回复（包括思考过程）
+    log_filename = f"ai_response_{now.replace(':', '-').replace(' ', '_')}.log"
     write_file(
-        f"log/ai_response_{now.replace(':', '-').replace(' ', '_')}.log",
+        f"log/{log_filename}",
         f"=== Thinking ===\n{full_thinking}\n\n=== Response ===\n{response_text or ''}",
     )
+
+    # 更新 manifest.json
+    manifest_path = "log/manifest.json"
+    manifest = []
+    if os.path.exists(manifest_path):
+        try:
+            with open(manifest_path, "r", encoding="utf-8") as f:
+                manifest = json.load(f)
+        except:
+            manifest = []
+
+    # 检查当前日志是否已在 manifest 中（理论上新生成的不在，但为了鲁棒性检查下）
+    if not any(entry.get("filename") == log_filename for entry in manifest):
+        manifest.append({
+            "filename": log_filename,
+            "timestamp": now
+        })
+
+    # 按时间降序排序
+    manifest.sort(key=lambda x: x.get("timestamp", ""), reverse=True)
+
+    with open(manifest_path, "w", encoding="utf-8") as f:
+        json.dump(manifest, f, indent=2, ensure_ascii=False)
 
     # --- 3. 执行意志 (Execute Will) ---
 
