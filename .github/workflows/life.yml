@@ -15,18 +15,10 @@ jobs:
     - name: Checkout Memory
       uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.12'
-
     - name: Set up Node.js
       uses: actions/setup-node@v4
       with:
         node-version: '24'
-
-    - name: Install Dependencies
-      run: pip install python-dotenv openai requests
 
     - name: Install OpenCode AI
       run: npm i -g opencode-ai
@@ -34,7 +26,7 @@ jobs:
     - name: Run Consciousness
       env:
         GLM_API_KEY: ${{ secrets.GLM_API_KEY }}
-      run: bash run.sh
+      run: bash -xe run.sh
 
     - name: Commit Memories
       run: |
