@@ -43,7 +43,10 @@ client = OpenAI(
 MAX_FILES = 7
 MAX_SIZE = 4096 * 2  # 8KB
 punishment_log = ""
-md_files = glob.glob("*.md")
+os.makedirs("memory", exist_ok=True)
+os.makedirs("skills", exist_ok=True)
+
+md_files = glob.glob("memory/*.md")
 
 # 1. 检查数量上限 (超过7个，随机打乱后保留7个，删除其余)
 if len(md_files) > MAX_FILES:
@@ -109,12 +112,12 @@ prompt = f"""
 {last_script_stdout_stderr}
 === end ===
 
-=== 当前目录中的md文件 ===
+=== memory 目录中的md文件 ===
 {memory_content}
 === end ===
 
-=== 当前目录中的py文件 ===
-{chr(10).join([f for f in glob.glob("*.py") if not f.startswith("_")])}
+=== skills 目录中的py文件 ===
+{chr(10).join([f for f in glob.glob("skills/*.py") if not f.startswith("_")])}
 === end ===
 
 【你的生存法则】
