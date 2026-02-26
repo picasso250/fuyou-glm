@@ -40,7 +40,7 @@ now=$(date -u +"%Y-%m-%d %H:%M UTC")
 
 # 使用 HEREDOC 构造复杂的提示词
 FINAL_PROMPT=$(cat <<EOF
-你是我(github.com/picasso250)的数字分身。
+你是我的数字分身。
 当前时间: $now
 
 === memory 目录中的md文件 ===
