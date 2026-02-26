@@ -41,7 +41,7 @@ client = OpenAI(
 # --- 1. 读取记忆 (Read Memory) ---
 # 物理法则执行者 - 天罚
 MAX_FILES = 7
-MAX_SIZE = 4096*2  # 8KB
+MAX_SIZE = 4096 * 2  # 8KB
 punishment_log = ""
 md_files = glob.glob("*.md")
 
@@ -114,7 +114,7 @@ prompt = f"""
 === end ===
 
 === 当前目录中的py文件 ===
-{chr(10).join(glob.glob("*.py"))}
+{chr(10).join([f for f in glob.glob("*.py") if not f.startswith("_")])}
 === end ===
 
 【你的生存法则】
@@ -222,10 +222,7 @@ try:
 
     # 检查当前日志是否已在 manifest 中（理论上新生成的不在，但为了鲁棒性检查下）
     if not any(entry.get("filename") == log_filename for entry in manifest):
-        manifest.append({
-            "filename": log_filename,
-            "timestamp": now
-        })
+        manifest.append({"filename": log_filename, "timestamp": now})
 
     # 按时间降序排序
     manifest.sort(key=lambda x: x.get("timestamp", ""), reverse=True)
