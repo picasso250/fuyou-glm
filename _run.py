@@ -230,13 +230,13 @@ try:
                 ["opencode", "run", prompt],
                 capture_output=True,
                 text=True,
-                timeout=300,
+                timeout=600, # 设置超时时间为10分钟，防止无限执行
             )
             stdout = result.stdout
             stderr = result.stderr
         except subprocess.TimeoutExpired:
             stdout = ""
-            stderr = "Execution timed out after 300 seconds"
+            stderr = "Execution timed out after 600 seconds"
         except Exception as e:
             stdout = ""
             stderr = str(e)
