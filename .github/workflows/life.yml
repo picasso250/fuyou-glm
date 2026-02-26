@@ -20,8 +20,16 @@ jobs:
       with:
         python-version: '3.12'
 
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '24'
+
     - name: Install Dependencies
       run: pip install python-dotenv openai requests
+
+    - name: Install OpenCode AI
+      run: npm i -g opencode-ai
 
     - name: Run Consciousness
       env:
