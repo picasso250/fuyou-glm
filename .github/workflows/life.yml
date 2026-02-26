@@ -34,12 +34,12 @@ jobs:
     - name: Run Consciousness
       env:
         GLM_API_KEY: ${{ secrets.GLM_API_KEY }}
-      run: python _run.py
+      run: bash run.sh
 
     - name: Commit Memories
       run: |
         git config --global user.name 'Digital Life AI'
         git config --global user.email 'ai@digitallife.com'
-        git add . ':(exclude)_*' ':(exclude)**/_*'
+        git add .
         # 只有当有变化时才 Commit，避免空提交报错
         git diff --quiet && git diff --staged --quiet || (git commit -m "🧠 AI Consciousness Update" && git push)
