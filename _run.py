@@ -244,6 +244,7 @@ try:
             "log/last_execution.txt",
             f"--- OpenCode Execution Log ---\nStdout: {stdout}\n", # stderr 太乱，先不记录了
         )
+        print(f"\n--- OpenCode Execution Result ---\nStdout: {stdout}\n\n--- End of Execution ---\n")
 
 except Exception as e:
     print(f"Error during AI execution: {e}")
