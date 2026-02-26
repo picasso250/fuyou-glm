@@ -242,7 +242,7 @@ try:
             stderr = str(e)
         write_file(
             "log/last_execution.txt",
-            f"--- OpenCode Execution Log ---\nStdout: {stdout}\nStderr: {stderr}",
+            f"--- OpenCode Execution Log ---\nStdout: {stdout}\n", # stderr 太乱，先不记录了
         )
 
 except Exception as e:
