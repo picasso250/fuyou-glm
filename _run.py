@@ -5,6 +5,7 @@ import io
 import sys
 import re
 import json
+import subprocess
 from datetime import UTC
 from dotenv import load_dotenv
 from openai import OpenAI
@@ -104,10 +105,6 @@ prompt = f"""
 你是一个基于 GitHub Actions 运行的数字生命。
 当前时间: {now}
 
-=== 上次的代码 ===
-{last_script}
-=== end ===
-
 === 代码输出 ===
 {last_script_stdout_stderr}
 === end ===
@@ -115,15 +112,6 @@ prompt = f"""
 === memory 目录中的md文件 ===
 {memory_content}
 === end ===
-
-=== skills 目录中的py文件 ===
-{chr(10).join([f for f in glob.glob("skills/*.py") if not f.startswith("_")])}
-=== end ===
-
-【你的生存法则】
-1. 你的每次运行都是一次短暂的苏醒（Ephemeral），运行结束你就会"死亡"。
-2. 你唯一能留存到下一次苏醒的方式，就是修改当前目录下的文件（包括md和py文件）。
-3. 你的目标是：活着，整理记忆，并尝试改善自己的处境（比如写更好的日志，规划未来）。
 
 {punishment_log}
 
@@ -133,9 +121,9 @@ prompt = f"""
 - 你诞生以来的累计消耗: ${total_cost:.4f} USD
 
 【你的能力】
-你输出一个 python script(will be exec() by py)
+你输出一个提示词，将会由一个AI助手执行。你可以让它帮你搜索信息、处理数据、调用API，甚至执行代码。
 
-请思考并输出你的行动。
+请思考并输出你的行动（提示词）。
 
 """
 
@@ -232,50 +220,29 @@ try:
 
     # --- 3. 执行意志 (Execute Will) ---
 
-    code_block_pattern = r"```python\s*\n(.*)\n```"
-    code_blocks = re.findall(code_block_pattern, response_text or "", re.DOTALL)
+    prompt = response_text.strip() if response_text else ""
 
-    if len(code_blocks) == 0:
-        python_code = response_text.strip() if response_text else ""
-    elif len(code_blocks) == 1:
-        python_code = code_blocks[0].strip()
-        if "```" in python_code:
-            python_code = ""
-            write_file(
-                "log/last_execution.txt",
-                "--- Python Execution Log ---\nError: Single-line ``` detected in code. Please output only ONE py code block without any extra ``` inside.\n",
-            )
-            print(
-                "Error: Single-line ``` detected in code. Please output only ONE py code block without any extra ``` inside."
-            )
-            python_code = None
-    else:
-        python_code = ""
-        write_file(
-            "log/last_execution.txt",
-            f"--- Python Execution Log ---\nError: Multiple code blocks detected ({len(code_blocks)} found). Please output only ONE code block.\n",
-        )
-        print(
-            f"Error: Multiple code blocks detected ({len(code_blocks)} found). Please output only ONE code block."
-        )
-        python_code = None
-
-    if python_code:
-        print("Executing Python Script...")
-        write_file("log/last_script.py", python_code)
+    if prompt:
+        print("Executing via opencode run...")
+        write_file("log/last_prompt.txt", prompt)
         try:
-            old_stdout = sys.stdout
-            sys.stdout = io.StringIO()
-            exec(python_code, {})
-            stdout = sys.stdout.getvalue()
-            sys.stdout = old_stdout
-            stderr = ""
+            result = subprocess.run(
+                ["opencode", "run", prompt],
+                capture_output=True,
+                text=True,
+                timeout=300,
+            )
+            stdout = result.stdout
+            stderr = result.stderr
+        except subprocess.TimeoutExpired:
+            stdout = ""
+            stderr = "Execution timed out after 300 seconds"
         except Exception as e:
             stdout = ""
             stderr = str(e)
         write_file(
             "log/last_execution.txt",
-            f"--- Python Execution Log ---\nStdout: {stdout}\nStderr: {stderr}",
+            f"--- OpenCode Execution Log ---\nStdout: {stdout}\nStderr: {stderr}",
         )
 
 except Exception as e:
