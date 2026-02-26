@@ -21,7 +21,7 @@ jobs:
         python-version: '3.12'
 
     - name: Install Dependencies
-      run: pip install python-dotenv openai
+      run: pip install python-dotenv openai requests
 
     - name: Run Consciousness
       env:

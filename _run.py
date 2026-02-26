@@ -242,6 +242,16 @@ try:
         python_code = response_text.strip() if response_text else ""
     elif len(code_blocks) == 1:
         python_code = code_blocks[0].strip()
+        if "```" in python_code:
+            python_code = ""
+            write_file(
+                "log/last_execution.txt",
+                "--- Python Execution Log ---\nError: Single-line ``` detected in code. Please output only ONE py code block without any extra ``` inside.\n",
+            )
+            print(
+                "Error: Single-line ``` detected in code. Please output only ONE py code block without any extra ``` inside."
+            )
+            python_code = None
     else:
         python_code = ""
         write_file(
