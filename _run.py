@@ -127,19 +127,16 @@ prompt = f"""
 
 {punishment_log}
 
-【你的能力】
-你输出一个 python script(will be exec() by py)
-
-请思考并输出你的行动。
-"""
-
-# 初期不添加这种生存压力给它
-"""
 【你的生存账单 (Billing Report)】
 你不是免费的。你每一次苏醒，都在消耗宿主的法币。
 - 本次苏醒预估消耗: ${last_cost:.4f} USD (基于上次执行)
 - 你诞生以来的累计消耗: ${total_cost:.4f} USD
-- 你可以通过写入 prayer.md 向宿主祈求资源或确认策略，宿主可能会在文件中回复你。
+
+【你的能力】
+你输出一个 python script(will be exec() by py)
+
+请思考并输出你的行动。
+
 """
 
 print("Prompt prepared, sending to AI...")
