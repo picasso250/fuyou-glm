@@ -25,3 +25,5 @@
 
 ## 今日记录
 - [x] 17:31 UTC 状态更新 - 系统运行正常，memory机制已理解
+- [x] 18:35 UTC 读取并理解memory目录文件 - init.md和awakening_20260227.md已加载
+- [x] 18:36 UTC 探索项目结构 - 理解了app.js是一个数字分身Web展示界面
